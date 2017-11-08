@@ -5,12 +5,12 @@ import org.apache.nlp.sequencelearning.crf.CRFModel;
 
 public class CRF {
 	
-	static String templfile = "C:\\Users\\nmhie\\Desktop\\java-crfsuite-master\\src\\test\\files\\template";
-	//static String trainfile = "C:\\Users\\nmhie\\Desktop\\java-crfsuite-master\\src\\test\\files\\train.data";
-	//static String testfile = "C:\\Users\\nmhie\\Desktop\\java-crfsuite-master\\src\\test\\files\\test.data";
-	static String modelfile = "C:\\Users\\nmhie\\Desktop\\java-crfsuite-master\\src\\test\\files\\model.data";
-	static String trainfile = "C:\\Users\\nmhie\\Desktop\\java-crfsuite-master\\src\\test\\files\\TrainSet.pos";
-	static String testfile = "C:\\Users\\nmhie\\Desktop\\java-crfsuite-master\\src\\test\\files\\TestSet.pos";
+	static String templfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\template";
+	//static String trainfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\train.data";
+	//static String testfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\test.data";
+	static String modelfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\model.data";
+	static String trainfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\TrainSet.pos";
+	static String testfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\TestSet.pos";
 	static CRFModel model;
 
 	public void learn() throws IOException {
@@ -32,13 +32,9 @@ public class CRF {
 	public void test() throws IOException {
 		System.out.println("\nRunning CRF test...");
 		CRFDriver driver = new CRFDriver();
-
-		int xsize = 3;
-		driver.crf_test(templfile, testfile, load_model(modelfile), xsize);
-	}
-
-	public static CRFModel load_model(String modelfile) {
-		return model;
+		int xsize = 2;
+		model = new CRFModel();
+		driver.crf_test(templfile, testfile, model.load(), xsize);
 	}
 
 }

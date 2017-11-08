@@ -25,6 +25,9 @@ public class CRFModel {
 	int err;
 	int zeroone;
 
+	public CRFModel() {
+	}
+
 	public CRFModel(FeatureTemplate featureTemplate, FeatureExpander featureExpander, FeatureIndexer featureIndexer,
 			Vector alpha, Vector expected, double obj, int err, int zeroone) {
 		this.featureTemplate = featureTemplate;
@@ -35,10 +38,15 @@ public class CRFModel {
 		this.obj = obj;
 		this.err = err;
 		this.zeroone = zeroone;
-
 		this.maxid = this.featureIndexer.getMaxID();
 	}
 
+	public CRFModel load() {
+		CRFModel model = new CRFModel();
+		return model;
+				
+	}
+	
 	public void dump(String modelPath) throws IOException {
 		String context = "";
 

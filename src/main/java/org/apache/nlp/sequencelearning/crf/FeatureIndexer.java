@@ -8,14 +8,23 @@ import java.util.Set;
 
 public class FeatureIndexer {
 
-	class Pair {
+	public class Pair {
 		int ID = 0;
 		int Freq = 0;
 
+		public Pair() {
+			
+		}
 		public Pair(int id, int freq) {
 			ID = id;
 			Freq = freq;
 		}
+
+		@Override
+		public String toString() {
+			return ID + "\t" + Freq;
+		}
+		
 	}
 
 	private int ysize = 0;
@@ -73,6 +82,26 @@ public class FeatureIndexer {
 
 	public int getMaxID() {
 		return maxid;
+	}
+	
+	public void setMaxID(int maxid) {
+		this.maxid = maxid;
+	}
+
+	public Map<String, Pair> getFeatureIndexMapN() {
+		return FeatureIndexMap;
+	}
+	
+	public int getYsize() {
+		return ysize;
+	}
+
+	public void setYsize(int ysize) {
+		this.ysize = ysize;
+	}
+
+	public void setFeatureIndexMap(Map<String, Pair> featureIndexMap) {
+		FeatureIndexMap = featureIndexMap;
 	}
 
 	public void infoFeatureIndexMap() {

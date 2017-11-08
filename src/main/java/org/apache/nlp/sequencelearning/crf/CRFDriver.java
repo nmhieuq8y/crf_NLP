@@ -8,10 +8,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.mahout.math.DenseVector;
 import org.apache.mahout.math.Vector;
+import org.apache.nlp.sequencelearning.crf.FeatureIndexer.Pair;
 
 public class CRFDriver {
 	private static int converge = 0;
@@ -85,16 +87,16 @@ public class CRFDriver {
 
 		CRFModel model = new CRFModel(featureTemplate, featureExpander, featureIndexer, alpha, expected, obj, err,
 				zeroone);
-		writeAlpha(alpha);
-
+		writeAlpha(alpha); 
+		writeLabel();
+		writeIndexer();
 		return model;
 	}
 
 	private void writeAlpha(Vector alpha) {
 		PrintWriter writerAlpha = null;
 		try {
-			writerAlpha = new PrintWriter(
-					"C:\\Users\\nmhie\\Desktop\\java-crfsuite-master\\src\\test\\files\\Alpha.pos");
+			writerAlpha = new PrintWriter("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Alpha.pos");
 			writerAlpha.println(alpha.size());
 			for (int i = 0; i < alpha.size(); i++) {
 				writerAlpha.println(alpha.get(i));
@@ -106,16 +108,96 @@ public class CRFDriver {
 		}
 	}
 
+	private void writeLabel() {
+		PrintWriter writeLabel = null;
+		try {
+			writeLabel = new PrintWriter("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Label.pos");
+			for (String s : featureExpander.getHiddenStateSet()) {
+				writeLabel.println(s);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			writeLabel.close();
+		}
+	}
+
+	private void writeIndexer() {
+		PrintWriter writeIndexer = null;
+		try {
+			writeIndexer = new PrintWriter("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Indexer.pos",  "UTF-8");
+			writeIndexer.println(featureIndexer.getMaxID());
+			writeIndexer.println(featureIndexer.getYsize());
+			Map<String, Pair> map = featureIndexer.getFeatureIndexMapN();
+			for (Map.Entry<String, Pair> entry : map.entrySet()) {
+				writeIndexer.println(entry.getKey() + "\t" + entry.getValue());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			writeIndexer.close();
+		}
+	}
+
 	private void readAlpha() {
 		BufferedReader br = null;
 		try {
 			int i = 0;
 			String fileLine;
-			br = new BufferedReader(
-					new FileReader("C:\\Users\\nmhie\\Desktop\\java-crfsuite-master\\src\\test\\files\\Alpha.pos"));
+			br = new BufferedReader(new FileReader("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Alpha.pos"));
 			alpha = new DenseVector(Integer.parseInt(br.readLine()));
 			while ((fileLine = br.readLine()) != null) {
 				this.alpha.set(i, Double.parseDouble(fileLine));
+				i++;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	private void readLabel() {
+		BufferedReader br = null;
+		try {
+			String fileLine;
+			br = new BufferedReader(new FileReader("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Label.pos"));
+			while ((fileLine = br.readLine()) != null) {
+				featureExpander.getHiddenStateSet().add(fileLine);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	private void readIndexer() {
+		BufferedReader br = null;
+		try {
+			String fileLine;
+			String[] value;
+			String tab = "\t";
+			br = new BufferedReader(new InputStreamReader(
+					new FileInputStream("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Indexer.pos"), "UTF8"));
+			this.featureIndexer = new FeatureIndexer();
+			featureIndexer.setMaxID(Integer.parseInt(br.readLine()));
+			featureIndexer.setYsize(Integer.parseInt(br.readLine()));
+			while ((fileLine = br.readLine()) != null) {
+				value = fileLine.split(tab);
+				featureIndexer.getFeatureIndexMapN().put(value[0], featureIndexer.new Pair(Integer.parseInt(value[1]) ,Integer.parseInt(value[2])));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -134,8 +216,10 @@ public class CRFDriver {
 	public boolean crf_test(String templfile, String testfile, CRFModel model, int xsize) throws IOException {
 		readAlpha();
 		model.alpha = alpha;
-		this.featureExpander = model.featureExpander;
-		this.featureIndexer = model.featureIndexer;
+		this.featureTemplate = new FeatureTemplate(templfile);
+		this.featureExpander = new FeatureExpander(this.featureTemplate, xsize);
+		readLabel();
+		readIndexer();
 		String[] setences;
 		Set<String> hsSet = this.featureExpander.getHiddenStateSet();
 		String hsArray[] = new String[hsSet.size()];
