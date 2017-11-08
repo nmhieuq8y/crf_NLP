@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+encoding//src/main/java/org/apache/nlp/sequencelearning/crf/CRFDriver.java=UTF-8
+encoding//src/main/java/org/apache/nlp/sequencelearning/crf/FeatureExpander.java=UTF-8
+encoding//src/main/java/org/apache/nlp/sequencelearning/crf/Node.java=UTF-8
+encoding//src/main/java/org/apache/nlp/sequencelearning/crf/TaggerImpl.java=UTF-8
+encoding/<project>=UTF-8
