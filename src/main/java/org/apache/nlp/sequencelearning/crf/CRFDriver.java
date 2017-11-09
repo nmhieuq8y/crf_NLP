@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 import org.apache.mahout.math.DenseVector;
 import org.apache.mahout.math.Vector;
 import org.apache.nlp.sequencelearning.crf.FeatureIndexer.Pair;
@@ -87,140 +89,13 @@ public class CRFDriver {
 
 		CRFModel model = new CRFModel(featureTemplate, featureExpander, featureIndexer, alpha, expected, obj, err,
 				zeroone);
-		writeAlpha(alpha); 
-		writeLabel();
-		writeIndexer();
 		return model;
-	}
-
-	private void writeAlpha(Vector alpha) {
-		PrintWriter writerAlpha = null;
-		try {
-			writerAlpha = new PrintWriter("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Alpha.pos");
-			writerAlpha.println(alpha.size());
-			for (int i = 0; i < alpha.size(); i++) {
-				writerAlpha.println(alpha.get(i));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			writerAlpha.close();
-		}
-	}
-
-	private void writeLabel() {
-		PrintWriter writeLabel = null;
-		try {
-			writeLabel = new PrintWriter("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Label.pos");
-			for (String s : featureExpander.getHiddenStateSet()) {
-				writeLabel.println(s);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			writeLabel.close();
-		}
-	}
-
-	private void writeIndexer() {
-		PrintWriter writeIndexer = null;
-		try {
-			writeIndexer = new PrintWriter("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Indexer.pos",  "UTF-8");
-			writeIndexer.println(featureIndexer.getMaxID());
-			writeIndexer.println(featureIndexer.getYsize());
-			Map<String, Pair> map = featureIndexer.getFeatureIndexMapN();
-			for (Map.Entry<String, Pair> entry : map.entrySet()) {
-				writeIndexer.println(entry.getKey() + "\t" + entry.getValue());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			writeIndexer.close();
-		}
-	}
-
-	private void readAlpha() {
-		BufferedReader br = null;
-		try {
-			int i = 0;
-			String fileLine;
-			br = new BufferedReader(new FileReader("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Alpha.pos"));
-			alpha = new DenseVector(Integer.parseInt(br.readLine()));
-			while ((fileLine = br.readLine()) != null) {
-				this.alpha.set(i, Double.parseDouble(fileLine));
-				i++;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null) {
-					br.close();
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-
-	private void readLabel() {
-		BufferedReader br = null;
-		try {
-			String fileLine;
-			br = new BufferedReader(new FileReader("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Label.pos"));
-			while ((fileLine = br.readLine()) != null) {
-				featureExpander.getHiddenStateSet().add(fileLine);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null) {
-					br.close();
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-
-	private void readIndexer() {
-		BufferedReader br = null;
-		try {
-			String fileLine;
-			String[] value;
-			String tab = "\t";
-			br = new BufferedReader(new InputStreamReader(
-					new FileInputStream("C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\Indexer.pos"), "UTF8"));
-			this.featureIndexer = new FeatureIndexer();
-			featureIndexer.setMaxID(Integer.parseInt(br.readLine()));
-			featureIndexer.setYsize(Integer.parseInt(br.readLine()));
-			while ((fileLine = br.readLine()) != null) {
-				value = fileLine.split(tab);
-				featureIndexer.getFeatureIndexMapN().put(value[0], featureIndexer.new Pair(Integer.parseInt(value[1]) ,Integer.parseInt(value[2])));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (br != null) {
-					br.close();
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
 	}
 
 	@SuppressWarnings("resource")
 	public boolean crf_test(String templfile, String testfile, CRFModel model, int xsize) throws IOException {
-		/*readAlpha();
-		model.alpha = alpha;
-		this.featureTemplate = new FeatureTemplate(templfile);
-		this.featureExpander = new FeatureExpander(this.featureTemplate, xsize);
-		readLabel();
-		readIndexer();
-		*/
+		int countLabel = 0;
+		int right = 0;
 		Set<String> hsSet = model.featureExpander.getHiddenStateSet();
 		String hsArray[] = new String[hsSet.size()];
 		int id = 0;
@@ -246,12 +121,60 @@ public class CRFDriver {
 
 			int tokensNum = token_list.size();
 			for (int i = 0; i < tokensNum; i++) {
+				countLabel++;
 				System.out.println(token_list.get(i) + '\t' + hsArray[result.get(i)]);
+				if (token_list.get(i).split("/")[1].equals(hsArray[result.get(i)])) {
+					right++;
+				} else {
+					System.err.println(token_list.get(i) + '\t' + hsArray[result.get(i)]);
+				}
+				System.out.println(right);
+				System.out.println(countLabel);
 			}
-
 			token_list = new ArrayList<String>();
 		}
+		System.out.println("Accuracy: " + (100.0 * right / countLabel) + "%");
+		BufferedReader br = null;
+		try {
+			 br = new BufferedReader(new InputStreamReader(System.in));
+			String input;
+			while (true) {
+				System.out.println("Xin hãy nhập câu tiếng việt: ");
+				input = br.readLine();
 
+				if ("q".equals(input)) {
+					System.out.println("Exit!");
+					System.exit(0);
+				}
+				TaggerImpl tagger = new TaggerImpl(model.alpha);
+				setences = input.split(" ");
+				for (String s : setences) {
+					token_list.add(s);
+				}
+				model.featureExpander.expandForConsoleTest(token_list, tagger);
+				model.featureIndexer.Register(tagger);
+				tagger.buildLattice();
+				tagger.forwardbackward();
+				ArrayList<Integer> result = tagger.viterbi();
+
+				int tokensNum = token_list.size();
+				for (int i = 0; i < tokensNum; i++) {
+					System.out.println(token_list.get(i) + '\t' + hsArray[result.get(i)]);
+				}
+				token_list = new ArrayList<String>();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return true;
 	}
 

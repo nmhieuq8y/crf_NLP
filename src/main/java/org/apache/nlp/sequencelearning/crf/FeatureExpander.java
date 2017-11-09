@@ -35,7 +35,7 @@ public class FeatureExpander {
 		HiddenStateSet = new TreeSet<String>();
 		HiddenStateList = new ArrayList<String>();
 	}
-	
+
 	public FeatureExpander(FeatureTemplate featureTemplate, int xsize) {
 		HiddenStateSet = new TreeSet<String>();
 		HiddenStateList = new ArrayList<String>();
@@ -51,6 +51,61 @@ public class FeatureExpander {
 		return HiddenStateSet;
 	}
 
+	public void expandForConsoleTest(ArrayList<String> token_list, TaggerImpl tagger) {
+		ArrayList<ArrayList<String>> tokenALAL = new ArrayList<ArrayList<String>>();
+		ArrayList<String> tokenAL;
+		String tempLabel1 = "P";
+		String tempLabel2 = "R";
+		String tempLabel3 = "V";
+		String tempLabel4 = "N";
+		String tempLabel5 = "CH";
+		for (int i = 0; i < token_list.size(); i++) {
+			tagger.answerStr.add(tempLabel1);
+			tokenAL = new ArrayList<String>();
+			tokenAL.add(token_list.get(i));
+			if(i == 0) {
+				tokenAL.add(tempLabel1);
+			} else if(i == 1) {
+				tokenAL.add(tempLabel2);
+			} else if(i == 2) {
+				tokenAL.add(tempLabel3);
+			} else if(i == 3) {
+				tokenAL.add(tempLabel4);
+			} else if(i == 4) {
+				tokenAL.add(tempLabel5);
+			} else {
+				tokenAL.add(tempLabel2);
+			}
+			tokenALAL.add(tokenAL);
+		}
+
+		for (int i = 0; i < tokenALAL.size(); i++) {
+			ArrayList<String> featureAL = new ArrayList<String>();
+			for (int j = 0; j < featureTemplate.unigram_templs.size(); j++) {
+				StringBuffer feature = new StringBuffer();//
+				if (!applyRule(feature, featureTemplate.unigram_templs.get(j), i, tokenALAL)) {
+					System.out.println("unigram applyRule error");
+					return;
+				}
+				featureAL.add(feature.toString());
+			}
+			tagger.xStr.add(featureAL);
+		}
+		for (int i = 0; i < tokenALAL.size(); i++) {
+			ArrayList<String> featureAL = new ArrayList<String>();
+			for (int j = 0; j < featureTemplate.bigram_templs.size(); j++) {
+				StringBuffer feature = new StringBuffer();
+				if (!applyRule(feature, featureTemplate.bigram_templs.get(j), i, tokenALAL)) {
+					System.out.println("bigram applyRule error");
+					return;
+				}
+				featureAL.add(feature.toString());
+			}
+			tagger.xStr.add(featureAL);
+		}
+		return;
+	}
+
 	public boolean expand(ArrayList<String> token_list, TaggerImpl tagger) {
 		ArrayList<ArrayList<String>> tokenALAL = new ArrayList<ArrayList<String>>();
 
@@ -58,16 +113,12 @@ public class FeatureExpander {
 		int min_xsize = 999;
 		String token[];
 		String text;
-		String tokenArr[] = new String[token_list.size()];
-		for (int i = 0; i < tokenArr.length; i++) {
-			tokenArr[i] = token_list.get(i);
-		}
 
-		for (int i = 0; i < tokenArr.length; i++) {
-			if (tokenArr[i].equals("//CH")) {
+		for (int i = 0; i < token_list.size(); i++) {
+			if (token_list.get(i).equals("//CH")) {
 				token = new String[] { "/", "CH" };
 			} else {
-				token = tokenArr[i].split("/");
+				token = token_list.get(i).split("/");
 			}
 			if (token.length > 2) {
 				tagger.answerStr.add(token[token.length - 1]);
@@ -236,7 +287,8 @@ public class FeatureExpander {
 		}
 		return null;
 	}
+
 	private void readLabel() {
-		
+
 	}
 }

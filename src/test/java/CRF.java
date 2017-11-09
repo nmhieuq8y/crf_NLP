@@ -4,18 +4,21 @@ import org.apache.nlp.sequencelearning.crf.CRFDriver;
 import org.apache.nlp.sequencelearning.crf.CRFModel;
 
 public class CRF {
-	
+
 	static String templfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\template";
-	//static String trainfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\train.data";
-	//static String testfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\test.data";
+	// static String trainfile =
+	// "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\train.data";
+	// static String testfile =
+	// "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\test.data";
 	static String modelfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\model.data";
 	static String trainfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\TrainSet.pos";
 	static String testfile = "C:\\Users\\nmhie\\Desktop\\crf_NLP\\src\\test\\files\\TestSet.pos";
 	static CRFModel model;
+	CRFDriver driver;
 
 	public void learn() throws IOException {
 		System.out.println("Running CRF learn...");
-		CRFDriver driver = new CRFDriver();
+		driver = new CRFDriver();
 
 		boolean textmodelfile = false;
 		int xsize = 2;
@@ -31,7 +34,7 @@ public class CRF {
 
 	public void test() throws IOException {
 		System.out.println("\nRunning CRF test...");
-		CRFDriver driver = new CRFDriver();
+		driver = new CRFDriver();
 		int xsize = 2;
 		model = new CRFModel();
 		model.readModel(modelfile);

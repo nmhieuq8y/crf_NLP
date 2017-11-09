@@ -22,7 +22,6 @@ public class FeatureTemplate {
 		try {
 			reader = new BufferedReader(new FileReader(file));
 			String templateLine = null;
-			int line = 1;
 			while ((templateLine = reader.readLine()) != null) {
 				if (templateLine.startsWith("U")) {
 					unigram_templs.add(templateLine);
@@ -30,7 +29,6 @@ public class FeatureTemplate {
 				if (templateLine.startsWith("B")) {
 					bigram_templs.add(templateLine);
 				}
-				line++;
 			}
 			reader.close();
 		} catch (IOException e) {
