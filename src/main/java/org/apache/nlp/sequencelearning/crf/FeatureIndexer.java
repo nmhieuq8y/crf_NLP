@@ -29,9 +29,14 @@ public class FeatureIndexer {
 
 	private int ysize = 0;
 	private int maxid = 0;
-	private Map<String, Pair> FeatureIndexMap = new HashMap<String, Pair>();
-	private Map<String, Integer> HStateIndexMap = new HashMap<String, Integer>();
+	private Map<String, Pair> FeatureIndexMap;
+	private Map<String, Integer> HStateIndexMap;
 
+	public FeatureIndexer() {
+		FeatureIndexMap = new HashMap<String, Pair>();
+		HStateIndexMap = new HashMap<String, Integer>();
+	}
+	
 	public void IndexingHStateIndex(Set<String> hiddenStateTreeSet) {
 		ysize = hiddenStateTreeSet.size();
 		int i = 0;

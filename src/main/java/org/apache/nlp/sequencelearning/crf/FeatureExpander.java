@@ -10,12 +10,35 @@ public class FeatureExpander {
 	static String BOS[] = { "_B-1", "_B-2", "_B-3", "_B-4" };
 	static String EOS[] = { "_B+1", "_B+2", "_B+3", "_B+4" };
 
-	private Set<String> HiddenStateSet = new TreeSet<String>();
-	private ArrayList<String> HiddenStateList = new ArrayList<String>();
+	private Set<String> HiddenStateSet;
+	private ArrayList<String> HiddenStateList;
+	private FeatureTemplate featureTemplate;
 
-	FeatureTemplate featureTemplate;
+	public static int getXsize() {
+		return xsize;
+	}
 
+	public static void setXsize(int xsize) {
+		FeatureExpander.xsize = xsize;
+	}
+
+	public FeatureTemplate getFeatureTemplate() {
+		return featureTemplate;
+	}
+
+	public void setFeatureTemplate(FeatureTemplate featureTemplate) {
+		this.featureTemplate = featureTemplate;
+	}
+
+	public FeatureExpander() {
+		featureTemplate = new FeatureTemplate();
+		HiddenStateSet = new TreeSet<String>();
+		HiddenStateList = new ArrayList<String>();
+	}
+	
 	public FeatureExpander(FeatureTemplate featureTemplate, int xsize) {
+		HiddenStateSet = new TreeSet<String>();
+		HiddenStateList = new ArrayList<String>();
 		this.featureTemplate = featureTemplate;
 		this.xsize = xsize;
 	}

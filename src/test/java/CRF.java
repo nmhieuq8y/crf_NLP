@@ -26,7 +26,7 @@ public class CRF {
 		String algorithm = "L-BFGS";
 		model = driver.crf_learn(templfile, trainfile, modelfile, textmodelfile, xsize, maxitr, freq, eta, C,
 				algorithm);
-
+		model.writeModel(modelfile);
 	}
 
 	public void test() throws IOException {
@@ -34,7 +34,8 @@ public class CRF {
 		CRFDriver driver = new CRFDriver();
 		int xsize = 2;
 		model = new CRFModel();
-		driver.crf_test(templfile, testfile, model.load(), xsize);
+		model.readModel(modelfile);
+		driver.crf_test(templfile, testfile, model, xsize);
 	}
 
 }

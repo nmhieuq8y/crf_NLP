@@ -10,7 +10,12 @@ public class FeatureTemplate {
 
 	ArrayList<String> unigram_templs = new ArrayList<String>();
 	ArrayList<String> bigram_templs = new ArrayList<String>();
-
+	public FeatureTemplate() {
+		unigram_templs = new ArrayList<String>();
+		bigram_templs = new ArrayList<String>();
+	}
+	
+	
 	public FeatureTemplate(String templateUri) throws IOException {
 		File file = new File(templateUri);
 		BufferedReader reader = null;

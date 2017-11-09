@@ -214,23 +214,23 @@ public class CRFDriver {
 
 	@SuppressWarnings("resource")
 	public boolean crf_test(String templfile, String testfile, CRFModel model, int xsize) throws IOException {
-		readAlpha();
+		/*readAlpha();
 		model.alpha = alpha;
 		this.featureTemplate = new FeatureTemplate(templfile);
 		this.featureExpander = new FeatureExpander(this.featureTemplate, xsize);
 		readLabel();
 		readIndexer();
-		String[] setences;
-		Set<String> hsSet = this.featureExpander.getHiddenStateSet();
+		*/
+		Set<String> hsSet = model.featureExpander.getHiddenStateSet();
 		String hsArray[] = new String[hsSet.size()];
 		int id = 0;
 		for (String hiddenState : hsSet) {
 			hsArray[id] = hiddenState;
 			id++;
 		}
-
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(testfile), "UTF8"));
 		String line = null;
+		String[] setences;
 		ArrayList<String> token_list = new ArrayList<String>();
 		while ((line = reader.readLine()) != null) {
 			TaggerImpl tagger = new TaggerImpl(model.alpha);
@@ -238,8 +238,8 @@ public class CRFDriver {
 			for (String s : setences) {
 				token_list.add(s);
 			}
-			this.featureExpander.expand(token_list, tagger);
-			this.featureIndexer.Register(tagger);
+			model.featureExpander.expand(token_list, tagger);
+			model.featureIndexer.Register(tagger);
 			tagger.buildLattice();
 			tagger.forwardbackward();
 			ArrayList<Integer> result = tagger.viterbi();
